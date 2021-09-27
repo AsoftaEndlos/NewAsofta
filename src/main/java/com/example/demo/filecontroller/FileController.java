@@ -3,6 +3,7 @@ package com.example.demo.filecontroller;
 import java.awt.PageAttributes.MediaType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
@@ -11,6 +12,8 @@ import java.util.zip.Inflater;
 import com.example.demo.fileservice.FileUploadingService;
 import org.hibernate.internal.build.AllowSysOut;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity.BodyBuilder;
@@ -62,5 +65,9 @@ public class FileController {
 		return filedb.findById(id);
 	}
 
-
+	@GetMapping("/find")
+	public List<Fileinfomodel> findlastid()
+	{
+		return filedb.findByIdDesc();
+	}
 }

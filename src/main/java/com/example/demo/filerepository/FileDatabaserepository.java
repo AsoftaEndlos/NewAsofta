@@ -1,5 +1,6 @@
 package com.example.demo.filerepository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,4 +17,6 @@ public interface FileDatabaserepository extends JpaRepository<Fileinfomodel, Lon
 	Optional<Fileinfomodel> findByFilename(@Param ("filename") String filename);
 	@Query("SELECT u FROM Fileuploading_Table  u WHERE u.image = ?1")
 	public void uploadToDatabase( MultipartFile file);
+	@Query(value = "select * from Fileuploading_Table ORDER BY id DESC LIMIT 1",nativeQuery = true )
+	public List<Fileinfomodel> findByIdDesc();
 }
