@@ -121,7 +121,7 @@ public class AuthController {
 		Set<Role> roles = new HashSet<>();
 
 		if (strRoles == null) {
-			Role userRole = roleRepository.findByName(ERole.ROLE_USER);
+			Role userRole = roleRepository.findByName(ERole.ROLE_CUSTOMER);
 			// .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 			roles.add(userRole);
 		} else {
@@ -134,13 +134,13 @@ public class AuthController {
 
 					break;
 				case "mod":
-					Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR);
+					Role modRole = roleRepository.findByName(ERole.ROLE_SUPERUSER);
 					// .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 					roles.add(modRole);
 
 					break;
 				default:
-					Role userRole = roleRepository.findByName(ERole.ROLE_USER);
+					Role userRole = roleRepository.findByName(ERole.ROLE_CUSTOMER);
 					// .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 					roles.add(userRole);
 				}
@@ -156,7 +156,7 @@ public class AuthController {
 	
 	@RequestMapping(value = "/{status}", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> FindByStatus(@PathVariable int status,
-			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2		") int size) {
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size) {
 		try {
 			List<User> user = new ArrayList<User>();
 			org.springframework.data.domain.Pageable paging = PageRequest.of(page, size);

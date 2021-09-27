@@ -1,10 +1,6 @@
 package com.example.demo.model;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -76,10 +72,10 @@ public class User {
 //	@JsonIgnoreProperties("user")
 //	private List<MachineModel> model=new ArrayList<MachineModel>();
 
-	@ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
-	@JoinTable(name = "suassign_machine", joinColumns = @JoinColumn(name = "su_id"), inverseJoinColumns = @JoinColumn(name = "msu_id"))
-	@JsonIgnoreProperties
-	private List<MachineModel> machinemodel = new ArrayList<MachineModel>();
+	@ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST ,CascadeType.DETACH,CascadeType.REFRESH})
+	@JoinTable(name = "suassign_machine", joinColumns = @JoinColumn(name = "su_id",referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "msu_id",referencedColumnName = "id"))
+	@JsonIgnoreProperties("userref")
+	private Set<MachineModel> machinemodel = new HashSet<>();
 	
 	@OneToOne(targetEntity = Fileinfomodel.class, cascade = CascadeType.ALL)
 	private Fileinfomodel fileinfomodel;
@@ -179,11 +175,11 @@ public class User {
 		this.datetime = datetime;
 	}
 
-	public List<MachineModel> getMachinemodel() {
+	public Set<MachineModel> getMachinemodel() {
 		return machinemodel;
 	}
 
-	public void setMachinemodel(List<MachineModel> machinemodel) {
+	public void setMachinemodel(Set<MachineModel> machinemodel) {
 		this.machinemodel = machinemodel;
 	}
 
@@ -200,7 +196,18 @@ public class User {
 		machinemodel.add(machinemodel2);
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof User)) return false;
+		User user = (User) o;
+		return getStatus() == user.getStatus() && Objects.equals(getId(), user.getId()) && Objects.equals(getUsername(), user.getUsername()) && Objects.equals(getEmail(), user.getEmail()) && Objects.equals(getPassword(), user.getPassword()) && Objects.equals(getAddress(), user.getAddress()) && Objects.equals(getPhoneno(), user.getPhoneno()) && Objects.equals(getDatetime(), user.getDatetime()) && Objects.equals(getRoles(), user.getRoles()) && Objects.equals(getMachinemodel(), user.getMachinemodel()) && Objects.equals(getFileinfomodel(), user.getFileinfomodel());
+	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(getId(), getUsername(), getEmail(), getPassword(), getAddress(), getPhoneno(), getStatus(), getDatetime(), getRoles(), getMachinemodel(), getFileinfomodel());
+	}
 
 //	public int getPin() {
 //		return pin;

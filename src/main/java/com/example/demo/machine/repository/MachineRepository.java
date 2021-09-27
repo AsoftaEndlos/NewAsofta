@@ -11,10 +11,11 @@ import com.example.demo.Machine.MachineModel;
 
 @Repository
 public interface MachineRepository extends JpaRepository<MachineModel, Long>{
-	//@Query("select")
-//	public MachineModel findByCustomerid(@Param("customer_id")int customer_id);
+
 		@Query("select m from MachineModel m where m.status = false")
 		public List<MachineModel> findByStatusdeactive();
 		@Query("select m from MachineModel m where m.status = true")
 		public List<MachineModel> findByStatusactive();
+
+
 }

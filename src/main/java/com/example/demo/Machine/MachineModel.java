@@ -1,6 +1,7 @@
 package com.example.demo.Machine;
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -18,22 +19,15 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.example.demo.model.User;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Table(name = "Machine")
 @Entity
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class MachineModel {
 
 	@Id
@@ -72,7 +66,7 @@ public class MachineModel {
 //	private User user;
 	
 	@ManyToMany(mappedBy = "machinemodel")
-	@JsonProperty("machinemodel")
+	@JsonIgnoreProperties("machinemodel")
 	private Set<User> userref;
 	
 	public MachineModel() {
@@ -187,5 +181,7 @@ public class MachineModel {
 //	public void setUserlist(List<User> userlist) {
 //		this.userlist = userlist;
 //	}
+
+
 
 }

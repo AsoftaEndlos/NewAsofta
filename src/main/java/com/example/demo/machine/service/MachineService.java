@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.Machine.MachineModel;
@@ -68,9 +67,10 @@ public class MachineService {
 		machinerepositry.deleteById(id);
 		
 	}
-	public List<MachineModel> findAllData(MachineModel machineModel)
+	public List<MachineModel> findAllData()
 	{
-		return machinerepositry.findAll();
+		List<MachineModel> machineModels=machinerepositry.findAll();
+		return  machineModels;
 	}
 	public List<MachineModel> findBystatusdeactive()
 	{
@@ -80,7 +80,7 @@ public class MachineService {
 	{
 		return machinerepositry.findByStatusactive();
 	}
-	public Optional<MachineModel> findBysuperuser(Long id) throws Exception
+	public Optional<MachineModel>  findBysuperuser(Long id) throws Exception
 	{
 		if( machinerepositry.findById(id).isPresent())
 			return machinerepositry.findById(id);
