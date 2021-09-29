@@ -1,4 +1,4 @@
-package com.example.demo.filerepository;
+package com.example.demo.file.Repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.example.demo.fileuploading.Fileinfomodel;
+import com.example.demo.file.model.Fileinfomodel;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 

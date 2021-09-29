@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.Machine.MachineModel;
-import com.example.demo.Repository.UserRepository;
+import com.example.demo.machine.model.MachineModel;
+import com.example.demo.user.Repository.UserRepository;
 import com.example.demo.machine.repository.MachineRepository;
 import com.example.demo.machine.service.MachineService;
-import com.example.demo.model.User;
+import com.example.demo.user.model.User;
 
 @RestController
 @CrossOrigin
@@ -79,7 +79,7 @@ public class MachineController {
 	public ResponseEntity<?> findBySuperUser(@PathVariable long id) throws Exception {
 		return ResponseEntity.ok(machineService.findBysuperuser(id));
 	}
-	@PutMapping("{suid}/superusermachine/{msuid}")
+	@PutMapping("{suid}/Addsuperusermachine/{msuid}")
 	User superuser(@PathVariable long suid,@PathVariable long msuid)
 	{
 		User user= userrepository.findById(suid).get();
@@ -87,14 +87,22 @@ public class MachineController {
 		user.assignmachine(machinemodel);
 		return userrepository.save(user);
 	}
-	@GetMapping("/superusermachine/{suid}/{msuid}")
-	User superuserget(@PathVariable long suid,@PathVariable long msuid)
+	@PutMapping ("/{mid}/Customermachine//{suid}")
+	MachineModel AssignCustomerToMachine (@PathVariable long mid, @PathVariable long 	suid)
+
+	{
+		User user= userrepository.findById(suid).get();
+		MachineModel model=machinerepository.findById(mid).get();
+		model.assignCustomer(user);
+		return machinerepository.save(model);
+
+	}
+	@DeleteMapping("{suid}/deletesuperusermachine/{msuid}")
+	public User deleteuser(@PathVariable long suid, @PathVariable long msuid)
 	{
 		User user= userrepository.findById(suid).get();
 		MachineModel machinemodel=machinerepository.findById(msuid).get();
-//		user.assignmachine(machinemodel);
-//		return userrepository.save(user);
-		return user;
+		user.Deletemachine(machinemodel);
+		return userrepository.save(user);
 	}
-
 }

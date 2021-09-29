@@ -1,4 +1,4 @@
-package com.example.demo.fileuploading;
+package com.example.demo.file.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

@@ -1,4 +1,4 @@
-	package com.example.demo.model;
+	package com.example.demo.user.model;
 
 import java.util.Set;
 

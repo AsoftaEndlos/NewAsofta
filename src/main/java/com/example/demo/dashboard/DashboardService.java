@@ -3,10 +3,7 @@ package com.example.demo.dashboard;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import com.example.demo.Machine.MachineModel;
 
 @Service
 public class DashboardService {

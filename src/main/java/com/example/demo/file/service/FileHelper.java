@@ -1,4 +1,4 @@
-package com.example.demo.fileservice;
+package com.example.demo.file.service;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;

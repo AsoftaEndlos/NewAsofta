@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.Machine.MachineModel;
+import com.example.demo.machine.model.MachineModel;
 import com.example.demo.machine.repository.MachineRepository;
 
 @Service

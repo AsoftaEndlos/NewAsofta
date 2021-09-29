@@ -1,7 +1,7 @@
-package com.example.demo.Machine;
+package com.example.demo.machine.model;
 
+import java.io.Serializable;
 import java.util.Date;
-import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -22,13 +22,13 @@ import javax.persistence.TemporalType;
 import com.fasterxml.jackson.annotation.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.example.demo.model.User;
+import com.example.demo.user.model.User;
 
 @Table(name = "Machine")
 @Entity
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
-public class MachineModel {
+@JsonIdentityInfo( generator = ObjectIdGenerators.IntSequenceGenerator.class,property = "id")
+
+public class MachineModel implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,8 +39,8 @@ public class MachineModel {
 
 	@Column(name = "loaction")
 	private String location;
-	@Column(name = "customer_id")
-	private int user;
+//	@Column(name = "customer_id")
+//	private int user;
 	@Column(name = "machine_password")
 	private String password;
 
@@ -60,20 +60,22 @@ public class MachineModel {
 		datetime = new Date();
 	}
 
-//	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//	@JoinColumn(name = "user_id", referencedColumnName = "id")
-//	@JsonIgnoreProperties("model")
-//	private User user;
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "user_id", referencedColumnName = "id")
+	@JsonIgnoreProperties(value = "model")
+	@JsonBackReference
+	private User user;
 	
-	@ManyToMany(mappedBy = "machinemodel")
-	@JsonIgnoreProperties("machinemodel")
-	private Set<User> userref;
+	@ManyToMany(mappedBy = "machinedtails")
+	@JsonIgnoreProperties(value = "machinedtails")
+
+	private Set<User> Superuser;
 	
 	public MachineModel() {
 	}
 
 	public MachineModel(Long id, String machineid, String location, String password, int customerpin, int superuserpin,
-			boolean status, Date datetime,int user) {
+			boolean status, Date datetime) {
 		super();
 		this.id = id;
 		this.machineid = machineid;
@@ -83,7 +85,7 @@ public class MachineModel {
 		this.superuserpin = superuserpin;
 		this.status = status;
 		this.datetime = datetime;
-		this.user = user;
+
 	}
 
 	public Long getId() {
@@ -146,13 +148,7 @@ public class MachineModel {
 		return datetime;
 	}
 
-	public int getUser() {
-		return user;
-	}
 
-	public void setUser(int user) {
-		this.user = user;
-	}
 
 	public void setDatetime(Date datetime) {
 		this.datetime = datetime;
@@ -166,22 +162,24 @@ public class MachineModel {
 		this.status = status;
 	}
 
-	public Set<User> getUserref() {
-		return userref;
+	public Set<User> getSuperuser() {
+		return Superuser;
 	}
 
-	public void setUserref(Set<User> userref) {
-		this.userref = userref;
+	public void setSuperuser(Set<User> superuser) {
+		Superuser = superuser;
 	}
-	
-//	public List<User> getUserlist() {
-//		return userlist;
-//	}
-//
-//	public void setUserlist(List<User> userlist) {
-//		this.userlist = userlist;
-//	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 
 
-
+	public void assignCustomer(User user) {
+		this.user=user;
+	}
 }

@@ -1,10 +1,9 @@
-package com.example.demo.filecontroller;
+package com.example.demo.file.controller;
 
 import com.example.demo.exception.FileNotFound;
-import com.example.demo.filerepository.FileDatabaserepository;
-import com.example.demo.fileservice.FileHelper;
-import com.example.demo.fileservice.FileUploadingService;
-import com.example.demo.fileuploading.Fileinfomodel;
+import com.example.demo.file.Repository.FileDatabaserepository;
+import com.example.demo.file.service.FileHelper;
+import com.example.demo.file.service.FileUploadingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/path")

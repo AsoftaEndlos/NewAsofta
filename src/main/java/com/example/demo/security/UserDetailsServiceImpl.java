@@ -7,8 +7,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.demo.Repository.UserRepository;
-import com.example.demo.model.User;
+import com.example.demo.user.Repository.UserRepository;
+import com.example.demo.user.model.User;
 
 
 
