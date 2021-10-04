@@ -6,16 +6,21 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+
 @Entity
-@Table(name = "master_database")
+@Table(name = "master_data")
+//uniqueConstraints = {@UniqueConstraint(columnNames = "barcode")}
 public class Masterdatamodel {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "ITEM_Id")
 	private long id;
-
-	@Column(name = "BARCODE")
+	@Column(name = "ITEM_Id")
+	private long itemid;
+	@Column(name = "BARCODE",unique = true,updatable = true)
 	private long barcode;
+	
 	
 	@Column(name = "MATERIAL_TYPE")
 	private int materialtype;
@@ -33,20 +38,23 @@ public class Masterdatamodel {
 	private int itemweight;
 
 	@Column(name = "ITEM_VALUE")
-	private int itemvalue;
+	private float itemvalue;
 
 	@Column(name = "DATA_ACQUISITION")
 	private int dataacquisition;
 	
 	public Masterdatamodel() {
-		// TODO Auto-generated constructor stub
+	
 	}
 
 	
-	public Masterdatamodel(long id, long barcode, int materialtype, String material, String itemdescription,
-			int itemvolume, int itemweight, int itemvalue, int dataacquisition) {
+	
+
+	public Masterdatamodel(long id, long itemid, long barcode, int materialtype, String material,
+			String itemdescription, int itemvolume, int itemweight, float itemvalue, int dataacquisition) {
 		super();
 		this.id = id;
+		this.itemid = itemid;
 		this.barcode = barcode;
 		this.materialtype = materialtype;
 		this.material = material;
@@ -56,6 +64,8 @@ public class Masterdatamodel {
 		this.itemvalue = itemvalue;
 		this.dataacquisition = dataacquisition;
 	}
+
+
 
 
 	public long getId() {
@@ -114,11 +124,11 @@ public class Masterdatamodel {
 		this.itemweight = itemweight;
 	}
 
-	public int getItemvalue() {
+	public float getItemvalue() {
 		return itemvalue;
 	}
 
-	public void setItemvalue(int itemvalue) {
+	public void setItemvalue(float itemvalue) {
 		this.itemvalue = itemvalue;
 	}
 
@@ -128,6 +138,16 @@ public class Masterdatamodel {
 
 	public void setDataacquisition(int dataacquisition) {
 		this.dataacquisition = dataacquisition;
+	}
+
+
+	public long getItemid() {
+		return itemid;
+	}
+
+
+	public void setItemid(long itemid) {
+		this.itemid = itemid;
 	}
 		
 	
