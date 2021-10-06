@@ -60,7 +60,7 @@ public class User implements Serializable {
     private Set<Role> roles = new HashSet<>();
 
     // Machine Related Joins query
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER,
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY,
             orphanRemoval = true,
             cascade = CascadeType.ALL)
     @JsonIgnoreProperties(value = "user")
