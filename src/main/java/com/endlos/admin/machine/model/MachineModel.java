@@ -26,7 +26,7 @@ import com.endlos.admin.user.model.User;
 
 @Table(name = "Machine")
 @Entity
-@JsonIdentityInfo( generator = ObjectIdGenerators.IntSequenceGenerator.class,property = "id")
+@JsonIdentityInfo( generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
 
 public class MachineModel implements Serializable {
 
@@ -60,15 +60,13 @@ public class MachineModel implements Serializable {
 		datetime = new Date();
 	}
 
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
-	@JsonIgnoreProperties(value = "model")
-	@JsonBackReference
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "model"})
 	private User user;
 	
 	@ManyToMany(mappedBy = "machinedtails")
-	@JsonIgnoreProperties(value = "machinedtails")
-
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	private Set<User> Superuser;
 	
 	public MachineModel() {

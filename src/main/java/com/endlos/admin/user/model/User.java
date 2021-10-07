@@ -16,7 +16,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Entity
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "username"),
         @UniqueConstraint(columnNames = "email")})
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,15 +60,15 @@ public class User implements Serializable {
     private Set<Role> roles = new HashSet<>();
 
     // Machine Related Joins query
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY,
+    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY,
             orphanRemoval = true,
             cascade = CascadeType.ALL)
-    @JsonIgnoreProperties(value = "user")
-    private List<MachineModel> model = new ArrayList<>();
+    @JsonIgnoreProperties("user")
+    private Set<MachineModel> model = new HashSet<>();
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "suassign_machine", joinColumns = @JoinColumn(name = "su_id"), inverseJoinColumns = @JoinColumn(name = "msu_id"))
-    @JsonIgnoreProperties(value = "Superuser",ignoreUnknown = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Set<MachineModel> machinedtails = new HashSet<>();
 
 
@@ -187,11 +187,11 @@ public class User implements Serializable {
     }
 
 
-    public List<MachineModel> getModel() {
+    public Set<MachineModel> getModel() {
         return model;
     }
 
-    public void setModel(List<MachineModel> model) {
+    public void setModel(Set<MachineModel> model) {
         this.model = model;
     }
 
