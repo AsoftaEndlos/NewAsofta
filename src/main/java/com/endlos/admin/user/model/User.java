@@ -32,7 +32,7 @@ public class User implements Serializable {
     private String email;
 
     @NotBlank
-    @Size(max = 120)
+    @Size(max = 16)
     private String password;
     @NotBlank
     private String address;
