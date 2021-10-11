@@ -9,9 +9,8 @@ import java.io.File;
 @SpringBootApplication
 public class DemoApplication {
 
-	public static void main(String[] args) {
-		new File(FileHelper.UPLOAD_DIR).mkdirs();
-		SpringApplication.run(DemoApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        new File(FileHelper.UPLOAD_DIR).mkdirs();
+        SpringApplication.run(DemoApplication.class, args);
+    }
 }

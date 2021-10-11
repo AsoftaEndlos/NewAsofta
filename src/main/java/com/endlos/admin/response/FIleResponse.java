@@ -3,7 +3,7 @@ package com.endlos.admin.response;
 public class FIleResponse {
     private String fileid;
     private String filetype;
-    private  String message;
+    private String message;
     private boolean status;
 
     public FIleResponse(String fileid, String filetype, String message, boolean status) {
@@ -12,9 +12,11 @@ public class FIleResponse {
         this.message = message;
         this.status = status;
     }
-    public FIleResponse(){
+
+    public FIleResponse() {
 
     }
+
     public String getFileid() {
         return fileid;
     }

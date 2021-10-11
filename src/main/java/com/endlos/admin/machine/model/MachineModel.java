@@ -1,183 +1,182 @@
 package com.endlos.admin.machine.model;
 
+import com.endlos.admin.user.model.User;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.hibernate.validator.constraints.Range;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
+
+import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import com.fasterxml.jackson.annotation.*;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import com.endlos.admin.user.model.User;
-
 @Table(name = "Machine")
 @Entity
-@JsonIdentityInfo( generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
-
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@Validated
 public class MachineModel implements Serializable {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@Column(name = "machine_id", unique = true)
-	private String machineid;
 
-	@Column(name = "loaction")
-	private String location;
-//	@Column(name = "customer_id")
+    @NotEmpty(message = "machine id cannot be Empty")
+    @Column(name = "machine_id", unique = true)
+    private String machineid;
+
+    @Column(name = "loaction")
+    private String location;
+    //	@Column(name = "customer_id")
 //	private int user;
-	@Column(name = "machine_password")
-	private String password;
+    @NotEmpty(message = "Machine Password cannot be Empty")
+    @Column(name = "machine_password", nullable = false)
+    private String password;
 
-	@Column(name = "customer_pin")
-	private int customerpin;
+    @NotNull(message = "pin cannot be null")
+    @Min(value = 4, message = " can not be more than 6 Number")
+    @Column(name = "customer_pin")
+    private int customerpin;
 
-	@Column(name = "superuser_pin")
-	private int superuserpin;
-	@Column(name = "status")
-	private boolean status;
-	@Temporal(TemporalType.TIMESTAMP)
-	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-	private Date datetime;
 
-	@PrePersist
-	private void Createdate() {
-		datetime = new Date();
-	}
+    @NotNull(message = "pin cannot be null")
+    @Min(value = 4, message = " can not be under than 4 Number")
+    @Column(name = "superuser_pin")
+    private int superuserpin;
+    @Column(name = "status")
+    private boolean status;
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private Date datetime;
 
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "user_id", referencedColumnName = "id")
-	@JsonIgnoreProperties({"hibernateLazyInitializer", "model"})
-	private User user;
-	
-	@ManyToMany(mappedBy = "machinedtails")
-	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-	private Set<User> Superuser;
-	
-	public MachineModel() {
-	}
+    @PrePersist
+    private void Createdate() {
+        datetime = new Date();
+    }
 
-	public MachineModel(Long id, String machineid, String location, String password, int customerpin, int superuserpin,
-			boolean status, Date datetime) {
-		super();
-		this.id = id;
-		this.machineid = machineid;
-		this.location = location;
-		this.password = password;
-		this.customerpin = customerpin;
-		this.superuserpin = superuserpin;
-		this.status = status;
-		this.datetime = datetime;
+    @ManyToOne(targetEntity = User.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "m_id", referencedColumnName = "id")
+    @JsonIgnoreProperties("CustomerMAchineDetails")
+    //private  Set<User> ;
+    private User Customer;
 
-	}
+    @ManyToMany(targetEntity = User.class, mappedBy = "machinedtails")
+    @JsonIgnoreProperties("machinedtails")
+    private Set<User> Superuser;
 
-	public Long getId() {
-		return id;
-	}
+    public MachineModel() {
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
 
-	public String getLocation() {
-		return location;
-	}
+    public MachineModel(Long id, String machineid, String location, String password, int customerpin, int superuserpin,
+                        boolean status, Date datetime) {
+        super();
+        this.id = id;
+        this.machineid = machineid;
+        this.location = location;
+        this.password = password;
+        this.customerpin = customerpin;
+        this.superuserpin = superuserpin;
+        this.status = status;
+        this.datetime = datetime;
 
-	public void setLocation(String location) {
-		this.location = location;
-	}
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getMachineid() {
-		return machineid;
-	}
+    public String getLocation() {
+        return location;
+    }
 
-	public void setMachineid(String machineid) {
-		this.machineid = machineid;
-	}
+    public void setLocation(String location) {
+        this.location = location;
+    }
 
-	public int getCustomerpin() {
-		return customerpin;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public void setCustomerpin(int customerpin) {
-		this.customerpin = customerpin;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public int getSuperuserpin() {
-		return superuserpin;
-	}
+    public String getMachineid() {
+        return machineid;
+    }
 
-	public void setSuperuserpin(int superuserpin) {
-		this.superuserpin = superuserpin;
-	}
+    public void setMachineid(String machineid) {
+        this.machineid = machineid;
+    }
 
-//	public User getUser() {
+    public int getCustomerpin() {
+        return customerpin;
+    }
+
+    public void setCustomerpin(int customerpin) {
+        this.customerpin = customerpin;
+    }
+
+    public int getSuperuserpin() {
+        return superuserpin;
+    }
+
+    public void setSuperuserpin(int superuserpin) {
+        this.superuserpin = superuserpin;
+    }
+
+//	public Set<User> getUser() {
 //		return user;
 //	}
 //
-//	public void setUser(User user) {
+//	public void setUser(Set<User> user) {
 //		this.user = user;
 //	}
 
-	public Date getDatetime() {
-		return datetime;
-	}
+    public Date getDatetime() {
+        return datetime;
+    }
 
 
+    public void setDatetime(Date datetime) {
+        this.datetime = datetime;
+    }
 
-	public void setDatetime(Date datetime) {
-		this.datetime = datetime;
-	}
+    public boolean isStatus() {
+        return status;
+    }
 
-	public boolean isStatus() {
-		return status;
-	}
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
 
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
+    public Set<User> getSuperuser() {
+        return Superuser;
+    }
 
-	public Set<User> getSuperuser() {
-		return Superuser;
-	}
+    public void setSuperuser(Set<User> superuser) {
+        Superuser = superuser;
+    }
 
-	public void setSuperuser(Set<User> superuser) {
-		Superuser = superuser;
-	}
+    public User getCustomer() {
+        return Customer;
+    }
 
-	public User getUser() {
-		return user;
-	}
+    public void setCustomer(User customer) {
+        Customer = customer;
+    }
 
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-
-	public void assignCustomer(User user) {
-		this.user=user;
-	}
+    public void assignCustomer(User user) {
+        this.Customer = user;
+    }
 }

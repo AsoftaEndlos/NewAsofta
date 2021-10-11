@@ -1,50 +1,59 @@
 package com.endlos.admin.user.model;
 
-import java.io.Serializable;
-import java.util.*;
+import com.endlos.admin.file.model.Fileinfomodel;
+import com.endlos.admin.machine.model.MachineModel;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import com.endlos.admin.file.model.Fileinfomodel;
-import com.endlos.admin.machine.model.MachineModel;
-import com.fasterxml.jackson.annotation.*;
-import org.springframework.format.annotation.DateTimeFormat;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "username"),
         @UniqueConstraint(columnNames = "email")})
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "please fill Unique Name ")
+    @NotNull
     @Size(max = 20)
     private String username;
 
-    @NotBlank
+    @NotBlank(message = "please fill Unique Email ")
+    @NotNull
     @Size(max = 50)
     @Email
     private String email;
 
-    @NotBlank
-    @Size(max = 16)
+    @NotBlank(message = "Fill your Password")
+    @NotNull
+    @Size(min = 3, max = 16)
     private String password;
-    @NotBlank
+    @NotBlank(message = "please fill your Address")
+    @NotNull
     private String address;
-    @NotBlank
+    @NotBlank(message = "please fill your Number")
+    @Column(unique = true)
+    @NotNull
     private String phoneno;
 
 //	@Column(unique = true,length = 6)
 //	private int pin;
 
-
-    private int status;
-    @NotBlank
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private Date datetime;
@@ -54,21 +63,21 @@ public class User implements Serializable {
         datetime = new Date();
     }
 
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    @JsonIgnore
     private Set<Role> roles = new HashSet<>();
 
     // Machine Related Joins query
-    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY,
-            orphanRemoval = true,
-            cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("user")
-    private Set<MachineModel> model = new HashSet<>();
+    @OneToMany(targetEntity = MachineModel.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "c_id", referencedColumnName = "id")
+    @JsonIgnoreProperties("Customer")
+    private Set<MachineModel> CustomerMAchineDetails = new HashSet<>();
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinTable(name = "suassign_machine", joinColumns = @JoinColumn(name = "su_id"), inverseJoinColumns = @JoinColumn(name = "msu_id"))
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+
+    @ManyToMany(targetEntity = MachineModel.class)
+//    @JoinTable(name = "suassign_machine", joinColumns = @JoinColumn(name = "su_id"), inverseJoinColumns = @JoinColumn(name = "msu_id"))
+    @JsonIgnoreProperties("superuser")
     private Set<MachineModel> machinedtails = new HashSet<>();
 
 
@@ -78,17 +87,16 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(String username, String email, String password, String address, String phoneno, int status
-    ) {
-        super();
+    public User(String username, String email, String password, String address, String phoneno) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.address = address;
         this.phoneno = phoneno;
-        this.status = status;
-        //his.datetime = datetime;
+        //   this.status = status;
+        //    this.datetime = datetime;
     }
+
 
 //	public List<MachineModel> getModel() {
 //		return model;
@@ -154,13 +162,6 @@ public class User implements Serializable {
         this.phoneno = phoneno;
     }
 
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
 
     public Date getDatetime() {
         return datetime;
@@ -186,14 +187,14 @@ public class User implements Serializable {
         this.fileinfomodel = fileinfomodel;
     }
 
-
-    public Set<MachineModel> getModel() {
-        return model;
+    public Set<MachineModel> getCustomerMAchineDetails() {
+        return CustomerMAchineDetails;
     }
 
-    public void setModel(Set<MachineModel> model) {
-        this.model = model;
+    public void setCustomerMAchineDetails(Set<MachineModel> customerMAchineDetails) {
+        CustomerMAchineDetails = customerMAchineDetails;
     }
+
 
     public void assignmachine(MachineModel machinemodel2) {
         machinedtails.add(machinemodel2);
@@ -208,12 +209,12 @@ public class User implements Serializable {
         if (this == o) return true;
         if (!(o instanceof User)) return false;
         User user = (User) o;
-        return getStatus() == user.getStatus() && Objects.equals(getId(), user.getId()) && Objects.equals(getUsername(), user.getUsername()) && Objects.equals(getEmail(), user.getEmail()) && Objects.equals(getPassword(), user.getPassword()) && Objects.equals(getAddress(), user.getAddress()) && Objects.equals(getPhoneno(), user.getPhoneno()) && Objects.equals(getDatetime(), user.getDatetime()) && Objects.equals(getRoles(), user.getRoles()) && Objects.equals(getMachinedtails(), user.getMachinedtails()) && Objects.equals(getFileinfomodel(), user.getFileinfomodel());
+        return Objects.equals(getId(), user.getId()) && Objects.equals(getUsername(), user.getUsername()) && Objects.equals(getEmail(), user.getEmail()) && Objects.equals(getPassword(), user.getPassword()) && Objects.equals(getAddress(), user.getAddress()) && Objects.equals(getPhoneno(), user.getPhoneno()) && Objects.equals(getDatetime(), user.getDatetime()) && Objects.equals(getRoles(), user.getRoles()) && Objects.equals(getMachinedtails(), user.getMachinedtails()) && Objects.equals(getFileinfomodel(), user.getFileinfomodel());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getUsername(), getEmail(), getPassword(), getAddress(), getPhoneno(), getStatus(), getDatetime(), getRoles(), getMachinedtails(), getFileinfomodel());
+        return Objects.hash(getId(), getUsername(), getEmail(), getPassword(), getAddress(), getPhoneno(), getDatetime(), getRoles(), getMachinedtails(), getFileinfomodel());
     }
 
     public void Deletemachine(MachineModel machinemodel) {

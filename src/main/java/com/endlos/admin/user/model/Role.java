@@ -1,63 +1,52 @@
-	package com.endlos.admin.user.model;
+package com.endlos.admin.user.model;
 
-import java.util.Set;
-
-import javax.persistence.*;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "roles")
 @JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
+        generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Role {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-	@Enumerated(EnumType.STRING)
-	@Column(length = 20)
-	private ERole name;
-	@ManyToMany(mappedBy = "roles")
-	@JsonBackReference
-	private Set<User> roles;
-	public Role() {
+    @Enumerated(EnumType.ORDINAL)
+    @Column(length = 20)
+    private ERole name;
 
-	}
-	
-	public Role(Integer id, ERole name) {
-		super();
-		this.id = id;
-		this.name = name;
-	}
+    public Role() {
 
-	public Role(ERole name) {
-		this.name = name;
-	}
+    }
 
-	public Integer getId() {
-		return id;
-	}
+    public Role(Integer id, ERole name) {
+        super();
+        this.id = id;
+        this.name = name;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public Role(ERole name) {
+        this.name = name;
+    }
 
-	public ERole getName() {
-		return name;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public void setName(ERole name) {
-		this.name = name;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public Set<User> getRoles() {
-		return roles;
-	}
+    public ERole getName() {
+        return name;
+    }
 
-	public void setRoles(Set<User> roles) {
-		this.roles = roles;
-	}
+    public void setName(ERole name) {
+        this.name = name;
+    }
+
+
 }
