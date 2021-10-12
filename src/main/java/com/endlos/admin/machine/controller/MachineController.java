@@ -1,17 +1,22 @@
 package com.endlos.admin.machine.controller;
 
+import com.endlos.admin.exception.GloabalExceptionHandler;
+import com.endlos.admin.exception.UserNotFound;
 import com.endlos.admin.machine.service.MachineService;
 import com.endlos.admin.user.Repository.UserRepository;
 import com.endlos.admin.user.model.User;
 import com.endlos.admin.machine.model.MachineModel;
 import com.endlos.admin.machine.repository.MachineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -25,6 +30,8 @@ public class MachineController {
     MachineRepository machinerepository;
     @Autowired
     UserRepository userrepository;
+    @Autowired
+    GloabalExceptionHandler g;
 
     @PostMapping(value = "/create")
     public ResponseEntity<MachineModel> SaveMAchine(@Valid @RequestBody MachineModel machinemodel) throws Exception {
@@ -33,24 +40,44 @@ public class MachineController {
 
     @GetMapping(value = "/{id}")
     public Optional<MachineModel> GetIdData(@PathVariable Long id) {
-        return machineService.FindById(id);
+        return Optional.ofNullable(machineService.FindById(id).orElseThrow(() -> new UserNotFound("Sorry ! User Not Found " + id + " Number  id")));
 
 
     }
 
-    @PatchMapping("/update/{id}")
+    @PutMapping("/{id}")
     public MachineModel UpdateData(@PathVariable Long id, @RequestBody MachineModel machinemodel) {
         return this.machineService.UpdateMachine(id, machinemodel);
     }
 
-//    @PutMapping(value = "updatemachine/{id}")
-//    public MachineModel MachineAllocation(@PathVariable Long id, @RequestBody MachineModel machinemodel) {
-//        return this.machineService.UpdateMachineAllocation(id, machinemodel);
-//    }
+    @PatchMapping("/{id}")
+    public ResponseEntity<MachineModel> UpdateDatamachine(@PathVariable Long id, @RequestBody Map<Object, Object> fields) {
+        Optional<MachineModel> ma = machinerepository.findById(id);
+        if (ma.isPresent()) {
+            fields.forEach((key, value) -> {
+                        Field field = ReflectionUtils.findField(MachineModel.class, (String) key);
+                        field.setAccessible(true);
+                        ReflectionUtils.setField(field, ma.get(), value);
+                    }
+            );
+            MachineModel machinesave = machinerepository.save(ma.get());
 
-    @DeleteMapping("/delete/{id}")
-    public void deletedata(@PathVariable Long id) {
-        machineService.machinemodeldelete(id);
+        }
+        return null;
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletedata(@PathVariable Long id) {
+
+        try {
+            machineService.machinemodeldelete(id);
+            ResponseEntity.ok().body("Delete Successfully record =" + id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body("success");
     }
 
     @GetMapping(value = "/findall")

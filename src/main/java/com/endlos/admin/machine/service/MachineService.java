@@ -1,5 +1,6 @@
 package com.endlos.admin.machine.service;
 
+import com.endlos.admin.exception.UserNotFound;
 import com.endlos.admin.machine.model.MachineModel;
 import com.endlos.admin.machine.repository.MachineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import java.util.Optional;
 public class MachineService {
     @Autowired
     MachineRepository machinerepositry;
+    private MachineModel machinemodel;
 
     // this Method is Add machine data
     public MachineModel MachineSave(MachineModel machinemodel) throws Exception {
@@ -34,7 +36,10 @@ public class MachineService {
 
     // this Method is machine update
     public MachineModel UpdateMachine(Long id, MachineModel machinemodel) {
-        Optional<MachineModel> machine = machinerepositry.findById(id);
+        Optional<MachineModel> machine = Optional.ofNullable(machinerepositry.findById(id).orElseThrow(() -> {
+            return new UserNotFound("user not found" + id + " " + new MachineModel());
+
+        }));
         if (machine.isPresent()) {
             MachineModel machinesave = machine.get();
             machinesave.setLocation(machinemodel.getLocation());

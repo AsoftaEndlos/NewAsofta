@@ -4,9 +4,8 @@ import com.endlos.admin.user.model.User;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import org.hibernate.validator.constraints.Range;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.NumberFormat;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
@@ -18,7 +17,6 @@ import java.util.Set;
 @Table(name = "Machine")
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-@Validated
 public class MachineModel implements Serializable {
 
     @Id
@@ -38,16 +36,19 @@ public class MachineModel implements Serializable {
     @Column(name = "machine_password", nullable = false)
     private String password;
 
-    @NotNull(message = "pin cannot be null")
-    @Min(value = 4, message = " can not be more than 6 Number")
+    @NotNull
+    @DecimalMin(value = "100000", message = "Customer Pin length must be 6")
+    @DecimalMax("999999")
     @Column(name = "customer_pin")
     private int customerpin;
 
-
-    @NotNull(message = "pin cannot be null")
-    @Min(value = 4, message = " can not be under than 4 Number")
+    @NotNull
+    @DecimalMin(value = "100000", message = "super user pin length must be 6")
+    @DecimalMax("999999")
     @Column(name = "superuser_pin")
     private int superuserpin;
+
+
     @Column(name = "status")
     private boolean status;
     @Temporal(TemporalType.TIMESTAMP)
@@ -147,7 +148,6 @@ public class MachineModel implements Serializable {
         return datetime;
     }
 
-
     public void setDatetime(Date datetime) {
         this.datetime = datetime;
     }
@@ -178,5 +178,21 @@ public class MachineModel implements Serializable {
 
     public void assignCustomer(User user) {
         this.Customer = user;
+    }
+
+    @Override
+    public String toString() {
+        return "MachineModel{" +
+                "id=" + id +
+                ", machineid='" + machineid + '\'' +
+                ", location='" + location + '\'' +
+                ", password='" + password + '\'' +
+                ", customerpin=" + customerpin +
+                ", superuserpin=" + superuserpin +
+                ", status=" + status +
+                ", datetime=" + datetime +
+                ", Customer=" + Customer +
+                ", Superuser=" + Superuser +
+                '}';
     }
 }
