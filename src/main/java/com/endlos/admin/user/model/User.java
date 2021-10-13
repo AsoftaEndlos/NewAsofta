@@ -5,13 +5,13 @@ import com.endlos.admin.machine.model.MachineModel;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.hibernate.validator.constraints.Length;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
@@ -22,33 +22,31 @@ import java.util.Set;
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "username"),
         @UniqueConstraint(columnNames = "email")})
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-
+@Validated
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank(message = "please fill Unique Name ")
-    @NotNull
-    @Size(max = 20)
+    @Size(min = 3, max = 20, message = " required Username is not accept  < 3 or > 20")
     private String username;
-
-    @NotBlank(message = "please fill Unique Email ")
-    @NotNull
+    @Value("{validation.mail.notEmpty}")
+    @NotNull(message = "Enter Your Valid Email")
     @Size(max = 50)
     @Email
     private String email;
 
-    @NotBlank(message = "Fill your Password")
-    @NotNull
-    @Size(min = 3, max = 16)
+
+    @NotEmpty
+    @Length(min = 5, message = "*Your password must have at least 5 characters")
     private String password;
+
     @NotBlank(message = "please fill your Address")
-    @NotNull
     private String address;
+
     @NotBlank(message = "please fill your Number")
     @Column(unique = true)
-    @NotNull
     private String phoneno;
 
 //	@Column(unique = true,length = 6)

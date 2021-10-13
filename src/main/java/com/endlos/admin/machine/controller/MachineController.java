@@ -1,6 +1,5 @@
 package com.endlos.admin.machine.controller;
 
-import com.endlos.admin.exception.GloabalExceptionHandler;
 import com.endlos.admin.exception.UserNotFound;
 import com.endlos.admin.machine.service.MachineService;
 import com.endlos.admin.user.Repository.UserRepository;
@@ -30,8 +29,7 @@ public class MachineController {
     MachineRepository machinerepository;
     @Autowired
     UserRepository userrepository;
-    @Autowired
-    GloabalExceptionHandler g;
+
 
     @PostMapping(value = "/create")
     public ResponseEntity<MachineModel> SaveMAchine(@Valid @RequestBody MachineModel machinemodel) throws Exception {
@@ -68,16 +66,16 @@ public class MachineController {
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletedata(@PathVariable Long id) {
+    public ResponseEntity<HttpStatus> deletedata(@PathVariable Long id) {
 
         try {
             machineService.machinemodeldelete(id);
-            ResponseEntity.ok().body("Delete Successfully record =" + id);
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
-            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body("success");
+
     }
 
     @GetMapping(value = "/findall")
