@@ -1,6 +1,7 @@
 
 package com.endlos.admin.user.controller;
 
+import com.endlos.admin.machine.model.MachineModel;
 import com.endlos.admin.request.SignupRequest;
 import com.endlos.admin.user.Repository.RoleRepository;
 import com.endlos.admin.user.model.User;
@@ -25,10 +26,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -39,7 +42,6 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
-@Validated
 public class AuthController {
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
@@ -177,7 +179,7 @@ public class AuthController {
     }
 
 
-    @RequestMapping(value = "/user/findbyid/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
     public Optional<User> FindById(@PathVariable Long id) {
         return userRepository.findById(id);
     }
@@ -188,25 +190,26 @@ public class AuthController {
 //    }
 
 
-    @RequestMapping(value = "/user/deleteby/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/user/{id}", method = RequestMethod.DELETE)
     public void UserDeleteById(@PathVariable Long id) {
         userRepository.deleteById(id);
     }
 
-    @PatchMapping("/user/update/{id}")
-    public ResponseEntity<User> updateTutorial(@PathVariable("id") long id, @RequestBody User tutorial) {
-        Optional<User> tutorialData = userRepository.findById(id);
+    @PatchMapping("/user/{id}")
+    public ResponseEntity<User> updateTutorial(@PathVariable("id") long id, @RequestBody Map<Object, Object> fields) {
 
-        if (tutorialData.isPresent()) {
-            User user = tutorialData.get();
-            user.setPassword(encoder.encode(tutorial.getPassword()));
-            user.setEmail(tutorial.getEmail());
-            user.setPhoneno(tutorial.getPhoneno());
-            user.setAddress(tutorial.getAddress());
-            return new ResponseEntity<>(userRepository.save(user), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Optional<User> ma = userRepository.findById(id);
+        if (ma.isPresent()) {
+            fields.forEach((key, value) -> {
+                        Field field = ReflectionUtils.findField(User.class, (String) key);
+                        field.setAccessible(true);
+                        ReflectionUtils.setField(field, ma.get(), value);
+                    }
+            );
+            User machinesave = userRepository.save(ma.get());
+
         }
+        return null;
     }
 
 //    @PutMapping("/password/{id}")
@@ -223,7 +226,7 @@ public class AuthController {
 //        }
 //    }
 
-    @PostMapping("/findbyuser")
+    @PostMapping("/user/findbyuser")
     public ResponseEntity<User> findByuser(@RequestParam String username) {
         return ResponseEntity.ok(userRepository.findByUser(username));
     }
