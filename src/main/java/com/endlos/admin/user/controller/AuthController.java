@@ -82,8 +82,8 @@ public class AuthController {
                 userDetails.getDatetime(), roles));
     }
 
-    @PostMapping("/user/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    @PostMapping("/signup")
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) throws Exception {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
         }
@@ -97,31 +97,37 @@ public class AuthController {
                 encoder.encode(signUpRequest.getPassword()), signUpRequest.getAddress()
                 , signUpRequest.getPhoneno());
 
-        Set<String> strRoles = signUpRequest.getRole();
+        Set<String> strRoles = signUpRequest.getRoles();
         Set<Role> roles = new HashSet<>();
-
+        System.out.println(signUpRequest.getRoles());
         if (strRoles == null) {
-            Role userRole = roleRepository.findByName(ERole.ROLE_SUPERUSER).orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+            Role userRole = roleRepository.findByName(ERole.ROLE_SUPERUSER)
+                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+            System.out.println(userRole.getName());
             roles.add(userRole);
+            System.out.println("null values");
         } else {
             strRoles.forEach(role -> {
-                //  System.out.println(roles.contains(role.getBytes()));
                 switch (role) {
-                    case "admin":
-                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN).orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                    case "a":
+                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(adminRole);
+                        System.out.println("admin values");
 
                         break;
-                    case "customer":
-                        System.out.println("hello");
-                        Role modRole = roleRepository.findByName(ERole.ROLE_CUSTOMER).orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                    case "c":
+                        Role modRole = roleRepository.findByName(ERole.ROLE_CUSTOMER)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(modRole);
+                        System.out.println("mod values");
 
                         break;
                     default:
-                        Role userRole = roleRepository.findByName(ERole.ROLE_SUPERUSER).orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        Role userRole = roleRepository.findByName(ERole.ROLE_SUPERUSER)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(userRole);
-                        break;
+                        System.out.println("default values");
                 }
             });
         }

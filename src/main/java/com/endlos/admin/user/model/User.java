@@ -22,7 +22,6 @@ import java.util.Set;
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "username"),
         @UniqueConstraint(columnNames = "email")})
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-@Validated
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -137,6 +136,7 @@ public class User implements Serializable {
     }
 
     public Set<Role> getRoles() {
+        System.out.println("model setter getter ");
         return roles;
     }
 
